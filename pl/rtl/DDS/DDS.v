@@ -4,7 +4,6 @@ module  DDS
     input   wire            clk_dds         ,
     input   wire            rst             ,
     input   wire            dds_en          ,//*dds使能信号
-    input   wire            set_flag        ,//*设置参数的脉冲信号
     input   wire    [31:0]  f_word          ,//*频率控制字
     input   wire    [11:0]  p_word          ,//*相位控制字
     input   wire    [1:0]   wave_type       ,//*波的类型
@@ -15,23 +14,11 @@ reg     [31:0]      cnt_fre     ;//*频率计数器
 reg     [13:0]      cnt_addr    ;//*地址控制
 reg                 set_flag_reg;//*set_flag打一拍
 
-wire                set_flag_down;//*set_flag下降沿
-
-//*set_flag_reg:set_flag打一拍
-always@(posedge clk_dds or negedge rst)
-    if(!rst)
-        set_flag_reg <= 1'b0;
-    else
-        set_flag_reg <= set_flag;
-
-//*获取set_flag的下降沿
-assign set_flag_down = (set_flag_reg == 1'b1 && set_flag == 1'b0) ? 1'b1 : 1'b0;
-
 //*cnt_fre:频率计数器
 always@(posedge clk_dds or negedge rst)
     if(!rst)
         cnt_fre <= 32'd0;
-    else if(dds_en == 1'b0 || set_flag_down == 1'b1)
+    else if(dds_en == 1'b0)
         cnt_fre <= 32'd0;
     else
         cnt_fre <= cnt_fre + f_word;
@@ -40,7 +27,7 @@ always@(posedge clk_dds or negedge rst)
 always@(*)
     if(!rst)
         cnt_addr <= 14'd0;
-    else if(dds_en == 1'b0 || set_flag_down == 1'b1)
+    else if(dds_en == 1'b0)
         begin
             cnt_addr[11:0] <= p_word;
             cnt_addr[13:12] <= wave_type;

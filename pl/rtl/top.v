@@ -2,8 +2,7 @@ module top
 (
     input   wire            sys_clk         ,
     input   wire            sys_rst_n       ,
-    input   wire            dds_en          ,//*dds使能信号
-    input   wire            set_flag        ,//*设置参数的脉冲信号
+    input   wire            dds_en          ,
     input   wire    [31:0]  f_word          ,//*频率控制字
     input   wire    [11:0]  p_word          ,//*相位控制字
     input   wire    [1:0]   wave_type       ,//*波的类型
@@ -38,7 +37,6 @@ DDS u_DDS
     .clk_dds    ( clk_dds    ),
     .rst        ( rst        ),
     .dds_en     ( dds_en     ),
-    .set_flag   ( set_flag   ),
     .f_word     ( f_word     ),
     .p_word     ( p_word     ),
     .wave_type  ( wave_type  ),
@@ -54,9 +52,5 @@ DA_ctrl u_DA_ctrl
     .clk_da   ( clk_da   ),
     .da_data  ( da_data  )
 );
-
-
-
-
 
 endmodule
